@@ -5,8 +5,7 @@ import { DepositRepositoryInterface } from "./interface/deposit/deposit-reposito
 
 export class DepositRepository
   extends BodyRepositoryAbstract<DepositEntity>
-  implements DepositRepositoryInterface
-{
+  implements DepositRepositoryInterface {
   register(entity: DepositEntity): DepositEntity {
     this.database.push(entity);
     const depositIndex = this.database.findIndex(
@@ -27,13 +26,20 @@ export class DepositRepository
     return this.database[depositIndex];
   }
   delete(id: string, soft?: boolean | undefined): void {
-    const depositIndex = this.database.findIndex(
-      (deposit) => deposit.id === id
-    );
-    this.database.splice(depositIndex, 1);
+    const deposit = this.findOneById(id)
+    if (soft || soft === undefined) {
+      deposit.deletedAt = Date.now()
+      this.update(id, deposit)
+    }
+    else {
+      const depositIndex = this.database.findIndex(
+        (deposit) => deposit.id === id
+      );
+      this.database.splice(depositIndex, 1);
+    }
   }
   findAll(): DepositEntity[] {
-    return this.database;
+    return this.database.filter(deposit => deposit.deletedAt === undefined);
   }
   findOneById(id: string): DepositEntity {
     const depositIndex = this.database.findIndex(

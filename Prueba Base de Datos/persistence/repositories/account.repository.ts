@@ -4,8 +4,7 @@ import { AccountRepositoryInterface } from "./interface/account/account-reposito
 
 export class AccountRepository
   extends BodyRepositoryAbstract<AccountEntity>
-  implements AccountRepositoryInterface
-{
+  implements AccountRepositoryInterface {
   register(entity: AccountEntity): AccountEntity {
     this.database.push(entity);
     const accountIndex = this.database.findIndex(
@@ -15,24 +14,37 @@ export class AccountRepository
   }
   update(id: string, entity: AccountEntity): AccountEntity {
     const accountIndex = this.database.findIndex(
-      (account) => account.id === id
+      (account) => account.id === id && (account.deletedAt ?? true) === true
     );
-    const data = this.database[accountIndex];
-    this.database[accountIndex] = {
-      ...data,
-      ...entity,
-      id: id,
-    };
+    if (accountIndex >= 0) {
+      const data = this.database[accountIndex];
+      this.database[accountIndex] = {
+        ...data,
+        ...entity,
+        id: id,
+      };
+    }
+    else {
+      throw new Error("No se encontro el dato buscado")
+    }
+
     return this.database[accountIndex];
   }
   delete(id: string, soft?: boolean | undefined): void {
-    const accountIndex = this.database.findIndex(
-      (account) => account.id === id
-    );
-    this.database.splice(accountIndex, 1);
+    const account = this.findOneById(id)
+    if (soft || soft === undefined) {
+      account.deletedAt = Date.now()
+      this.update(id, account)
+    }
+    else {
+      const accountIndex = this.database.findIndex(
+        (account) => account.id === id
+      );
+      this.database.splice(accountIndex, 1);
+    }
   }
   findAll(): AccountEntity[] {
-    return this.database;
+    return this.database.filter(account => account.deletedAt === undefined);
   }
   findOneById(id: string): AccountEntity {
     const accountIndex = this.database.findIndex(

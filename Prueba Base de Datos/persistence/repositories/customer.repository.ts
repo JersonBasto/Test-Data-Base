@@ -4,8 +4,7 @@ import { CustomerRepositoryInterface } from "./interface/customer/customer-repos
 
 export class CustomerRepository
   extends BodyRepositoryAbstract<CustomerEntity>
-  implements CustomerRepositoryInterface
-{
+  implements CustomerRepositoryInterface {
   register(entity: CustomerEntity): CustomerEntity {
     this.database.push(entity);
     const customerIndex = this.database.findIndex(
@@ -26,13 +25,20 @@ export class CustomerRepository
     return this.database[customerIndex];
   }
   delete(id: string, soft?: boolean | undefined): void {
-    const customerIndex = this.database.findIndex(
-      (customer) => customer.id === id
-    );
-    this.database.splice(customerIndex, 1);
+    const customer = this.findOneById(id)
+    if (soft || soft === undefined) {
+      customer.deletedAt = Date.now()
+      this.update(id, customer)
+    }
+    else {
+      const customerIndex = this.database.findIndex(
+        (customer) => customer.id === id
+      );
+      this.database.splice(customerIndex, 1);
+    }
   }
   findAll(): CustomerEntity[] {
-    return this.database;
+    return this.database.filter(customer => customer.deletedAt === undefined);
   }
   findOneById(id: string): CustomerEntity {
     const customerIndex = this.database.findIndex(

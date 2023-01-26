@@ -39,7 +39,7 @@ var AccountRepository = /** @class */ (function (_super) {
         return this.database[accountIndex];
     };
     AccountRepository.prototype.update = function (id, entity) {
-        var accountIndex = this.database.findIndex(function (account) { return account.id === id; });
+        var accountIndex = this.database.findIndex(function (account) { var _a; return account.id === id && ((_a = account.deletedAt) !== null && _a !== void 0 ? _a : true) === true; });
         var data = this.database[accountIndex];
         this.database[accountIndex] = __assign(__assign(__assign({}, data), entity), { id: id });
         return this.database[accountIndex];

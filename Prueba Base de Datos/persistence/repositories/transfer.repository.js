@@ -55,6 +55,40 @@ var TransferRespository = /** @class */ (function (_super) {
         var transferIndex = this.database.findIndex(function (transfer) { return transfer.id === id; });
         return this.database[transferIndex];
     };
+    TransferRespository.prototype.findByIncomeCustomerId = function (id) {
+        var transferIndex = this.database.findIndex(function (transfer) { return transfer.income.customerId.id === id; });
+        return this.database[transferIndex];
+    };
+    TransferRespository.prototype.findByIncomeId = function (id) {
+        var transferIndex = this.database.findIndex(function (transfer) { return transfer.income.id === id; });
+        return this.database[transferIndex];
+    };
+    TransferRespository.prototype.findByOutcomeId = function (id) {
+        var transferIndex = this.database.findIndex(function (transfer) { return transfer.outcome.id === id; });
+        return this.database[transferIndex];
+    };
+    TransferRespository.prototype.findByOutcomeCustomerId = function (id) {
+        var transferIndex = this.database.findIndex(function (transfer) { return transfer.outcome.customerId.id === id; });
+        return this.database[transferIndex];
+    };
+    TransferRespository.prototype.findByAmountGreaterThan = function (amount) {
+        var arrayAmount = [];
+        this.database.map(function (transfer) {
+            if (transfer.amount > amount) {
+                arrayAmount.push(transfer);
+            }
+        });
+        return arrayAmount;
+    };
+    TransferRespository.prototype.findByAmountLessThan = function (amount) {
+        var arrayAmount = [];
+        this.database.map(function (transfer) {
+            if (transfer.amount < amount) {
+                arrayAmount.push(transfer);
+            }
+        });
+        return arrayAmount;
+    };
     return TransferRespository;
 }(base_repository_1.BodyRepositoryAbstract));
 exports.TransferRespository = TransferRespository;

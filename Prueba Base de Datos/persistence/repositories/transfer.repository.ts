@@ -4,8 +4,7 @@ import { TransferRepositoryInterface } from "./interface/transfer/transfer-repos
 
 export class TransferRespository
   extends BodyRepositoryAbstract<TransferEntity>
-  implements TransferRepositoryInterface
-{
+  implements TransferRepositoryInterface {
   register(entity: TransferEntity): TransferEntity {
     this.database.push(entity);
     const transferIndex = this.database.findIndex(
@@ -26,13 +25,20 @@ export class TransferRespository
     return this.database[transferIndex];
   }
   delete(id: string, soft?: boolean | undefined): void {
-    const transferIndex = this.database.findIndex(
-      (transfer) => transfer.id === id
-    );
-    this.database.splice(transferIndex, 1);
+    const transfer = this.findOneById(id)
+    if (soft || soft === undefined) {
+      transfer.deletedAt = Date.now()
+      this.update(id, transfer)
+    }
+    else {
+      const transferIndex = this.database.findIndex(
+        (account) => account.id === id
+      );
+      this.database.splice(transferIndex, 1);
+    }
   }
   findAll(): TransferEntity[] {
-    return this.database;
+    return this.database.filter(transfer => transfer.deletedAt === undefined);
   }
   findOneById(id: string): TransferEntity {
     const transferIndex = this.database.findIndex(
