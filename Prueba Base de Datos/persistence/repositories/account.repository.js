@@ -34,27 +34,23 @@ var AccountRepository = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     AccountRepository.prototype.register = function (entity) {
+        var _a;
         this.database.push(entity);
-        var accountIndex = this.database.findIndex(function (account) { return account.id === entity.id; });
-        return this.database[accountIndex];
+        return (_a = this.database.at(-1)) !== null && _a !== void 0 ? _a : entity;
     };
     AccountRepository.prototype.update = function (id, entity) {
-        var accountIndex = this.database.findIndex(function (account) { var _a; return account.id === id && ((_a = account.deletedAt) !== null && _a !== void 0 ? _a : true) === true; });
-        if (accountIndex >= 0) {
-            var data = this.database[accountIndex];
-            this.database[accountIndex] = __assign(__assign(__assign({}, data), entity), { id: id });
-        }
+        var accountIndex = this.database.findIndex(function (account) { return account.id === id; });
+        var data = this.database[accountIndex];
+        this.database[accountIndex] = __assign(__assign(__assign({}, data), entity), { id: id });
         return this.database[accountIndex];
     };
     AccountRepository.prototype["delete"] = function (id, soft) {
         var account = this.findOneById(id);
         if (soft || soft === undefined) {
-            account.deletedAt = Date.now();
-            this.update(id, account);
+            this.softDelete(id);
         }
         else {
-            var accountIndex = this.database.findIndex(function (account) { return account.id === id; });
-            this.database.splice(accountIndex, 1);
+            this.hardDelete(id);
         }
     };
     AccountRepository.prototype.findAll = function () {
@@ -74,22 +70,22 @@ var AccountRepository = /** @class */ (function (_super) {
         return arrayState;
     };
     AccountRepository.prototype.findBalanceGreaterThan = function (balance) {
-        var arrayState = [];
+        var arrayBalanceGreater = [];
         this.database.map(function (documentType) {
             if (documentType.balance > balance) {
-                arrayState.push(documentType);
+                arrayBalanceGreater.push(documentType);
             }
         });
-        return arrayState;
+        return arrayBalanceGreater;
     };
     AccountRepository.prototype.findBalanceLessThan = function (balance) {
-        var arrayState = [];
+        var arrayBalanceLess = [];
         this.database.map(function (documentType) {
             if (documentType.balance < balance) {
-                arrayState.push(documentType);
+                arrayBalanceLess.push(documentType);
             }
         });
-        return arrayState;
+        return arrayBalanceLess;
     };
     AccountRepository.prototype.findByCustomerId = function (id) {
         var accountIndex = this.database.findIndex(function (account) { return account.customerId.id === id; });
@@ -102,6 +98,15 @@ var AccountRepository = /** @class */ (function (_super) {
     AccountRepository.prototype.findByDocumentTypeId = function (id) {
         var accountIndex = this.database.findIndex(function (account) { return account.customerId.documentType.id === id; });
         return this.database[accountIndex];
+    };
+    AccountRepository.prototype.hardDelete = function (id) {
+        var accountIndex = this.database.findIndex(function (account) { return account.id === id; });
+        this.database.splice(accountIndex, 1);
+    };
+    AccountRepository.prototype.softDelete = function (id) {
+        var account = this.findOneById(id);
+        account.deletedAt = Date.now();
+        this.update(id, account);
     };
     return AccountRepository;
 }(base_repository_1.BodyRepositoryAbstract));

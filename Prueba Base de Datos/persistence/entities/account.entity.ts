@@ -1,4 +1,4 @@
-import { AccountModel, AccountTypeModel, CustomerModel } from "../../models";
+import { AccountModel } from "../../models";
 import { AccountTypeEntity, CustomerEntity } from ".";
 
 export class AccountEntity implements AccountModel {

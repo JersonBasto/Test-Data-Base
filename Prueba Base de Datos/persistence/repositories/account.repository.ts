@@ -7,36 +7,27 @@ export class AccountRepository
   implements AccountRepositoryInterface {
   register(entity: AccountEntity): AccountEntity {
     this.database.push(entity);
-    const accountIndex = this.database.findIndex(
-      (account) => account.id === entity.id
-    );
-    return this.database[accountIndex];
+    return this.database.at(-1) ?? entity;
   }
   update(id: string, entity: AccountEntity): AccountEntity {
     const accountIndex = this.database.findIndex(
-      (account) => account.id === id && (account.deletedAt ?? true) === true
+      (account) => account.id === id,
     );
-    if (accountIndex >= 0) {
-      const data = this.database[accountIndex];
-      this.database[accountIndex] = {
-        ...data,
-        ...entity,
-        id: id,
-      };
-    }
+    const data = this.database[accountIndex];
+    this.database[accountIndex] = {
+      ...data,
+      ...entity,
+      id: id,
+    };
     return this.database[accountIndex];
   }
   delete(id: string, soft?: boolean | undefined): void {
     const account = this.findOneById(id)
     if (soft || soft === undefined) {
-      account.deletedAt = Date.now()
-      this.update(id, account)
+      this.softDelete(id)
     }
     else {
-      const accountIndex = this.database.findIndex(
-        (account) => account.id === id
-      );
-      this.database.splice(accountIndex, 1);
+      this.hardDelete(id)
     }
   }
   findAll(): AccountEntity[] {
@@ -44,7 +35,7 @@ export class AccountRepository
   }
   findOneById(id: string): AccountEntity {
     const accountIndex = this.database.findIndex(
-      (account) => account.id === id
+      (account) => account.id === id,
     );
     return this.database[accountIndex];
   }
@@ -55,42 +46,53 @@ export class AccountRepository
         arrayState.push(documentType);
       }
     });
-    return arrayState;
+    return arrayState
   }
   findBalanceGreaterThan(balance: number): AccountEntity[] {
-    let arrayState: AccountEntity[] = [];
+    let arrayBalanceGreater: AccountEntity[] = [];
     this.database.map((documentType) => {
       if (documentType.balance > balance) {
-        arrayState.push(documentType);
+        arrayBalanceGreater.push(documentType);
       }
     });
-    return arrayState;
+    return arrayBalanceGreater
   }
   findBalanceLessThan(balance: number): AccountEntity[] {
-    let arrayState: AccountEntity[] = [];
+    let arrayBalanceLess: AccountEntity[] = [];
     this.database.map((documentType) => {
       if (documentType.balance < balance) {
-        arrayState.push(documentType);
+        arrayBalanceLess.push(documentType);
       }
     });
-    return arrayState;
+    return arrayBalanceLess
   }
   findByCustomerId(id: string): AccountEntity {
     const accountIndex = this.database.findIndex(
-      (account) => account.customerId.id === id
+      (account) => account.customerId.id === id,
     );
     return this.database[accountIndex];
   }
   findByAccountTypeId(id: string): AccountEntity {
     const accountIndex = this.database.findIndex(
-      (account) => account.accountType.id === id
+      (account) => account.accountType.id === id,
     );
     return this.database[accountIndex];
   }
   findByDocumentTypeId(id: string): AccountEntity {
     const accountIndex = this.database.findIndex(
-      (account) => account.customerId.documentType.id === id
+      (account) => account.customerId.documentType.id === id,
     );
     return this.database[accountIndex];
+  }
+  hardDelete(id: string): void {
+    const accountIndex = this.database.findIndex(
+      (account) => account.id === id
+    );
+    this.database.splice(accountIndex, 1);
+  }
+  softDelete(id: string): void {
+    const account = this.findOneById(id)
+    account.deletedAt = Date.now()
+    this.update(id, account)
   }
 }

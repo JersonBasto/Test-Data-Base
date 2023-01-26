@@ -86,10 +86,11 @@ account.update("3", {
 });
 console.log("-----------------UPDATE----------------");
 console.log(account.findAll());
-account.delete("4");
 console.log("-----------------DELETE SOFT----------------");
-account.delete("3", false);
+account.delete("3", true);
+console.log(account.findAll());
 console.log("-----------------DELETE ----------------");
+account.delete("4");
 console.log(account.findAll());
 console.log("-----------------FIND BY ID----------------");
 let result = account.findOneById("3");
