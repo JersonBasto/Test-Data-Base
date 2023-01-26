@@ -40,16 +40,25 @@ var AccountRepository = /** @class */ (function (_super) {
     };
     AccountRepository.prototype.update = function (id, entity) {
         var accountIndex = this.database.findIndex(function (account) { var _a; return account.id === id && ((_a = account.deletedAt) !== null && _a !== void 0 ? _a : true) === true; });
-        var data = this.database[accountIndex];
-        this.database[accountIndex] = __assign(__assign(__assign({}, data), entity), { id: id });
+        if (accountIndex >= 0) {
+            var data = this.database[accountIndex];
+            this.database[accountIndex] = __assign(__assign(__assign({}, data), entity), { id: id });
+        }
         return this.database[accountIndex];
     };
     AccountRepository.prototype["delete"] = function (id, soft) {
-        var accountIndex = this.database.findIndex(function (account) { return account.id === id; });
-        this.database.splice(accountIndex, 1);
+        var account = this.findOneById(id);
+        if (soft || soft === undefined) {
+            account.deletedAt = Date.now();
+            this.update(id, account);
+        }
+        else {
+            var accountIndex = this.database.findIndex(function (account) { return account.id === id; });
+            this.database.splice(accountIndex, 1);
+        }
     };
     AccountRepository.prototype.findAll = function () {
-        return this.database;
+        return this.database.filter(function (account) { return account.deletedAt === undefined; });
     };
     AccountRepository.prototype.findOneById = function (id) {
         var accountIndex = this.database.findIndex(function (account) { return account.id === id; });

@@ -35,17 +35,17 @@ var AccountTypeRepository = /** @class */ (function (_super) {
     }
     AccountTypeRepository.prototype.register = function (entity) {
         this.database.push(entity);
-        var accountTypeIndex = this.database.findIndex(function (customer) { return customer.id === entity.id; });
+        var accountTypeIndex = this.database.findIndex(function (accountType) { return accountType.id === entity.id; });
         return this.database[accountTypeIndex];
     };
     AccountTypeRepository.prototype.update = function (id, entity) {
-        var accountTypeIndex = this.database.findIndex(function (customer) { return customer.id === id; });
+        var accountTypeIndex = this.database.findIndex(function (accountType) { return accountType.id === id; });
         var data = this.database[accountTypeIndex];
         this.database[accountTypeIndex] = __assign(__assign(__assign({}, data), entity), { id: id });
         return this.database[accountTypeIndex];
     };
     AccountTypeRepository.prototype["delete"] = function (id, soft) {
-        var accountTypeIndex = this.database.findIndex(function (customer) { return customer.id === id; });
+        var accountTypeIndex = this.database.findIndex(function (accountType) { return accountType.id === id; });
         this.database.splice(accountTypeIndex, 1);
     };
     AccountTypeRepository.prototype.findAll = function () {

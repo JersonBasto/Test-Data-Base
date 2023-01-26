@@ -45,11 +45,18 @@ var CustomerRepository = /** @class */ (function (_super) {
         return this.database[customerIndex];
     };
     CustomerRepository.prototype["delete"] = function (id, soft) {
-        var customerIndex = this.database.findIndex(function (customer) { return customer.id === id; });
-        this.database.splice(customerIndex, 1);
+        var customer = this.findOneById(id);
+        if (soft || soft === undefined) {
+            customer.deletedAt = Date.now();
+            this.update(id, customer);
+        }
+        else {
+            var customerIndex = this.database.findIndex(function (customer) { return customer.id === id; });
+            this.database.splice(customerIndex, 1);
+        }
     };
     CustomerRepository.prototype.findAll = function () {
-        return this.database;
+        return this.database.filter(function (customer) { return customer.deletedAt === undefined; });
     };
     CustomerRepository.prototype.findOneById = function (id) {
         var customerIndex = this.database.findIndex(function (customer) { return customer.id === id; });

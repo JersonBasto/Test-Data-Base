@@ -45,11 +45,18 @@ var TransferRespository = /** @class */ (function (_super) {
         return this.database[transferIndex];
     };
     TransferRespository.prototype["delete"] = function (id, soft) {
-        var transferIndex = this.database.findIndex(function (transfer) { return transfer.id === id; });
-        this.database.splice(transferIndex, 1);
+        var transfer = this.findOneById(id);
+        if (soft || soft === undefined) {
+            transfer.deletedAt = Date.now();
+            this.update(id, transfer);
+        }
+        else {
+            var transferIndex = this.database.findIndex(function (account) { return account.id === id; });
+            this.database.splice(transferIndex, 1);
+        }
     };
     TransferRespository.prototype.findAll = function () {
-        return this.database;
+        return this.database.filter(function (transfer) { return transfer.deletedAt === undefined; });
     };
     TransferRespository.prototype.findOneById = function (id) {
         var transferIndex = this.database.findIndex(function (transfer) { return transfer.id === id; });
@@ -88,6 +95,15 @@ var TransferRespository = /** @class */ (function (_super) {
             }
         });
         return arrayAmount;
+    };
+    TransferRespository.prototype.hardDelete = function (id) {
+        var transferIndex = this.database.findIndex(function (account) { return account.id === id; });
+        this.database.splice(transferIndex, 1);
+    };
+    TransferRespository.prototype.softDelete = function (id) {
+        var transfer = this.findOneById(id);
+        transfer.deletedAt = Date.now();
+        this.update(id, transfer);
     };
     return TransferRespository;
 }(base_repository_1.BodyRepositoryAbstract));

@@ -16,7 +16,7 @@ account.register({
     state: true,
   },
   id: "1",
-  state: true,
+  state: true
 });
 account.register({
   accountType: { id: "22", name: "asd2", state: true },
@@ -87,7 +87,9 @@ account.update("3", {
 console.log("-----------------UPDATE----------------");
 console.log(account.findAll());
 account.delete("4");
-console.log("-----------------DELETE----------------");
+console.log("-----------------DELETE SOFT----------------");
+account.delete("3", false);
+console.log("-----------------DELETE ----------------");
 console.log(account.findAll());
 console.log("-----------------FIND BY ID----------------");
 let result = account.findOneById("3");
@@ -99,11 +101,11 @@ console.log(account.findBalanceGreaterThan(8000));
 console.log("-----------------FIND LESS STATE----------------");
 console.log(account.findBalanceLessThan(1000));
 console.log("-----------------FIND CUSTOMER ID----------------");
-result=account.findByCustomerId("1")
+result = account.findByCustomerId("1")
 console.log(result);
 console.log("-----------------FIND DOCUMENT TYPE ID----------------");
-result=account.findByDocumentTypeId("22")
+result = account.findByDocumentTypeId("22")
 console.log(result);
 console.log("-----------------FIND ACCOUNT TYPE ID----------------");
-result=account.findByAccountTypeId("33")
+result = account.findByAccountTypeId("33")
 console.log(result);

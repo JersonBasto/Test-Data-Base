@@ -45,11 +45,18 @@ var DepositRepository = /** @class */ (function (_super) {
         return this.database[depositIndex];
     };
     DepositRepository.prototype["delete"] = function (id, soft) {
-        var depositIndex = this.database.findIndex(function (deposit) { return deposit.id === id; });
-        this.database.splice(depositIndex, 1);
+        var deposit = this.findOneById(id);
+        if (soft || soft === undefined) {
+            deposit.deletedAt = Date.now();
+            this.update(id, deposit);
+        }
+        else {
+            var depositIndex = this.database.findIndex(function (deposit) { return deposit.id === id; });
+            this.database.splice(depositIndex, 1);
+        }
     };
     DepositRepository.prototype.findAll = function () {
-        return this.database;
+        return this.database.filter(function (deposit) { return deposit.deletedAt === undefined; });
     };
     DepositRepository.prototype.findOneById = function (id) {
         var depositIndex = this.database.findIndex(function (deposit) { return deposit.id === id; });

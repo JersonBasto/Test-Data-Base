@@ -35,17 +35,17 @@ var DocumentTypeRepository = /** @class */ (function (_super) {
     }
     DocumentTypeRepository.prototype.register = function (entity) {
         this.database.push(entity);
-        var documentTypeIndex = this.database.findIndex(function (customer) { return customer.id === entity.id; });
+        var documentTypeIndex = this.database.findIndex(function (documentType) { return documentType.id === entity.id; });
         return this.database[documentTypeIndex];
     };
     DocumentTypeRepository.prototype.update = function (id, entity) {
-        var documentTypeIndex = this.database.findIndex(function (customer) { return customer.id === id; });
+        var documentTypeIndex = this.database.findIndex(function (documentType) { return documentType.id === id; });
         var data = this.database[documentTypeIndex];
         this.database[documentTypeIndex] = __assign(__assign(__assign({}, data), entity), { id: id });
         return this.database[documentTypeIndex];
     };
     DocumentTypeRepository.prototype["delete"] = function (id, soft) {
-        var documentTypeIndex = this.database.findIndex(function (customer) { return customer.id === id; });
+        var documentTypeIndex = this.database.findIndex(function (account) { return account.id === id; });
         this.database.splice(documentTypeIndex, 1);
     };
     DocumentTypeRepository.prototype.findAll = function () {

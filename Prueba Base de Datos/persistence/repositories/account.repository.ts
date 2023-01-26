@@ -24,10 +24,6 @@ export class AccountRepository
         id: id,
       };
     }
-    else {
-      throw new Error("No se encontro el dato buscado")
-    }
-
     return this.database[accountIndex];
   }
   delete(id: string, soft?: boolean | undefined): void {
