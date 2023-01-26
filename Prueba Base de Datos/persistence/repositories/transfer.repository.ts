@@ -88,4 +88,15 @@ export class TransferRespository
     });
     return arrayAmount;
   }
+  hardDelete(id: string): void {
+    const transferIndex = this.database.findIndex(
+      (account) => account.id === id
+    );
+    this.database.splice(transferIndex, 1);
+  }
+  softDelete(id: string): void {
+    const transfer = this.findOneById(id)
+    transfer.deletedAt = Date.now()
+    this.update(id, transfer)
+  }
 }
