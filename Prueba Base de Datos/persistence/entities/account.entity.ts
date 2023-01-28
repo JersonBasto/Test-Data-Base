@@ -3,7 +3,7 @@ import { AccountTypeEntity, CustomerEntity } from ".";
 
 export class AccountEntity implements AccountModel {
   id = (Math.random() * (100 - 1 + 1) + 1).toString();
-  customerId: CustomerEntity;
+  customer: CustomerEntity;
   accountType: AccountTypeEntity;
   balance = 0;
   state = true;

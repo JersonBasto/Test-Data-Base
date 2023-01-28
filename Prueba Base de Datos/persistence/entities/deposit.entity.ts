@@ -3,7 +3,7 @@ import { AccountEntity } from "./";
 
 export class DepositEntity implements DepositModel {
     id = (Math.random() * (100 - 1 + 1) + 1).toString();
-    accountId: AccountEntity;
+    account: AccountEntity;
     amount = 0;
     dateTime: number | Date;
     deletedAt?: number | Date | undefined;

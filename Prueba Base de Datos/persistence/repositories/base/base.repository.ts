@@ -1,3 +1,4 @@
+import { ErrorEntity } from '../../entities/error.entity';
 import { BodyRepositoryInterface } from '../interface/model-repository.interface';
 
 export abstract class BodyRepositoryAbstract<entity>
@@ -7,19 +8,19 @@ export abstract class BodyRepositoryAbstract<entity>
   constructor() {
     this.database = new Array<entity>();
   }
-  register(entity: entity): entity {
+  register(entity: entity): entity | ErrorEntity {
     throw new Error('Method not implemented.');
   }
-  update(id: string, entity: entity): entity {
+  update(id: string, entity: entity): entity | ErrorEntity {
     throw new Error('Method not implemented.');
   }
-  delete(id: string, soft?: boolean | undefined): void {
+  delete(id: string, soft?: boolean | undefined): void | ErrorEntity {
     throw new Error('Method not implemented.');
   }
-  findAll(): entity[] {
+  findAll(): entity[] | ErrorEntity {
     throw new Error('Method not implemented.');
   }
-  findOneById(id: string): entity {
+  findOneById(id: string): entity  | ErrorEntity{
     throw new Error('Method not implemented.');
   }
 }

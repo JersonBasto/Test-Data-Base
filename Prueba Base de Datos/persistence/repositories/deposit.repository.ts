@@ -49,32 +49,32 @@ export class DepositRepository
   }
   findByAccountId(accountId: string): DepositEntity {
     const depositIndex = this.database.findIndex(
-      (deposit) => deposit.accountId.id === accountId
+      (deposit) => deposit.account.id === accountId
     );
     return this.database[depositIndex];
   }
   findByAccountTypeId(accountTypeId: string): DepositEntity {
     const depositIndex = this.database.findIndex(
-      (deposit) => deposit.accountId.accountType.id === accountTypeId
+      (deposit) => deposit.account.accountType.id === accountTypeId
     );
     return this.database[depositIndex];
   }
   findByCustomerId(customerId: string): DepositEntity {
     const depositIndex = this.database.findIndex(
-      (deposit) => deposit.accountId.customerId.id === customerId
+      (deposit) => deposit.account.customer.id === customerId
     );
     return this.database[depositIndex];
   }
   findByEmail(email: string): DepositEntity {
     const depositIndex = this.database.findIndex(
-      (deposit) => deposit.accountId.customerId.email === email
+      (deposit) => deposit.account.customer.email === email
     );
     return this.database[depositIndex];
   }
   findByDocumentTypeId(documentTypeId: string): DepositEntity {
     const depositIndex = this.database.findIndex(
       (deposit) =>
-        deposit.accountId.customerId.documentType.id === documentTypeId
+        deposit.account.customer.documentType.id === documentTypeId
     );
     return this.database[depositIndex];
   }
