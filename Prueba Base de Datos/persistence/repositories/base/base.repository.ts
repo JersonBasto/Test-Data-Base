@@ -3,7 +3,7 @@ import { BodyRepositoryInterface } from "../interface/model-repository.interface
 export abstract class BodyRepositoryAbstract<entity>
   implements BodyRepositoryInterface<entity>
 {
-  protected readonly database: Array<entity>;
+  protected  database: Array<entity>;
   constructor() {
     this.database = new Array<entity>();
   }

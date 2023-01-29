@@ -1,3 +1,4 @@
+import { accountDataBase } from "../../database/accountDataBase";
 import { AccountEntity } from "../entities";
 import { BodyRepositoryAbstract } from "./base/base.repository";
 import { AccountRepositoryInterface } from "./interface/account/account-repository.interface";
@@ -6,6 +7,10 @@ export class AccountRepository
   extends BodyRepositoryAbstract<AccountEntity>
   implements AccountRepositoryInterface
 {
+  constructor() {
+    super();
+    this.database = accountDataBase;
+  }
   register(entity: AccountEntity): AccountEntity {
     this.database.push(entity);
     return this.database.at(-1) ?? entity;

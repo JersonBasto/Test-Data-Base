@@ -27,11 +27,14 @@ var __assign = (this && this.__assign) || function () {
 };
 exports.__esModule = true;
 exports.AccountRepository = void 0;
+var accountDataBase_1 = require("../../database/accountDataBase");
 var base_repository_1 = require("./base/base.repository");
 var AccountRepository = /** @class */ (function (_super) {
     __extends(AccountRepository, _super);
     function AccountRepository() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super.call(this) || this;
+        _this.database = accountDataBase_1.accountDataBase;
+        return _this;
     }
     AccountRepository.prototype.register = function (entity) {
         var _a;

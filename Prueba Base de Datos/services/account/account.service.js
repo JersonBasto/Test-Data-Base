@@ -2,7 +2,6 @@
 exports.__esModule = true;
 exports.AccountService = void 0;
 var entities_1 = require("../../persistence/entities");
-var error_entity_1 = require("../../persistence/entities/error.entity");
 var AccountService = /** @class */ (function () {
     function AccountService(accountRepository, accountTypeRepository) {
         this.accountRepository = accountRepository;
@@ -29,24 +28,9 @@ var AccountService = /** @class */ (function () {
      * @memberof AccountService
      */
     AccountService.prototype.getBalance = function (accountId) {
+        var _a;
         var account = this.accountRepository.findOneById(accountId);
-        var errorService = new error_entity_1.ErrorEntity();
-        if (account) {
-            if (account.state) {
-                return account.balance;
-            }
-            else {
-                errorService.tittle = "Error";
-                errorService.message =
-                    "No se puede realizar la operacion, la cuenta esta desactivada";
-                return errorService;
-            }
-        }
-        else {
-            errorService.tittle = "Error";
-            errorService.message = "No se encontro ninguna cuenta con ese ID";
-            return errorService;
-        }
+        return (_a = account.balance) !== null && _a !== void 0 ? _a : undefined;
     };
     /**
      * Agregar balance a una cuenta

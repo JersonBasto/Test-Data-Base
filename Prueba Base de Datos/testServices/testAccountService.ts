@@ -5,5 +5,8 @@ const account = new AccountService(
   new AccountRepository(),
   new AccountTypeRepository()
 );
-const result1 = account.getBalance("1")
+account.addBalance("1", 3000);
+account.removeBalance("1", 500);
+account.changeAccountType("1", "2");
+const result1 = account.getBalance("4");
 console.log(result1);

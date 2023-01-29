@@ -30,23 +30,9 @@ export class AccountService {
    * @return {*}  {number}
    * @memberof AccountService
    */
-  getBalance(accountId: string): number | ErrorEntity {
+  getBalance(accountId: string): number {
     const account = this.accountRepository.findOneById(accountId);
-    const errorService = new ErrorEntity();
-    if (account) {
-      if (account.state) {
-        return account.balance;
-      } else {
-        errorService.tittle = "Error";
-        errorService.message =
-          "No se puede realizar la operacion, la cuenta esta desactivada";
-        return errorService;
-      }
-    } else {
-      errorService.tittle = "Error";
-      errorService.message = "No se encontro ninguna cuenta con ese ID";
-      return errorService;
-    }
+    return account.balance ?? undefined;
   }
 
   /**

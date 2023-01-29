@@ -4,5 +4,8 @@ var account_type_repository_1 = require("../persistence/repositories/account-typ
 var account_repository_1 = require("../persistence/repositories/account.repository");
 var services_1 = require("../services");
 var account = new services_1.AccountService(new account_repository_1.AccountRepository(), new account_type_repository_1.AccountTypeRepository());
-var result1 = account.getBalance("1");
+account.addBalance("1", 3000);
+account.removeBalance("1", 500);
+account.changeAccountType("1", "2");
+var result1 = account.getBalance("4");
 console.log(result1);
