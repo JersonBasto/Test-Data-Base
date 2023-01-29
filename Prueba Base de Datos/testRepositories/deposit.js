@@ -1,12 +1,12 @@
 "use strict";
 exports.__esModule = true;
-var repositories_1 = require("./persistence/repositories");
-var deposit = new repositories_1.DepositRepository();
+var deposit_repository_1 = require("./persistence/repositories/deposit.repository");
+var deposit = new deposit_repository_1.DepositRepository();
 deposit.register({
-    accountId: {
+    account: {
         accountType: { id: "11", name: "asd1", state: true },
         balance: 0,
-        customerId: {
+        customer: {
             id: "1",
             documentType: { id: "11", name: "asd1", state: true },
             document: "string",
@@ -24,10 +24,10 @@ deposit.register({
     id: "1"
 });
 deposit.register({
-    accountId: {
+    account: {
         accountType: { id: "22", name: "asd2", state: true },
         balance: 0,
-        customerId: {
+        customer: {
             id: "2",
             documentType: { id: "22", name: "asd2", state: true },
             document: "string",
@@ -45,10 +45,10 @@ deposit.register({
     id: "2"
 });
 deposit.register({
-    accountId: {
+    account: {
         accountType: { id: "33", name: "asd3", state: true },
         balance: 0,
-        customerId: {
+        customer: {
             id: "3",
             documentType: { id: "33", name: "asd3", state: true },
             document: "string",
@@ -66,10 +66,10 @@ deposit.register({
     id: "3"
 });
 deposit.register({
-    accountId: {
+    account: {
         accountType: { id: "44", name: "asd4", state: true },
         balance: 0,
-        customerId: {
+        customer: {
             id: "4",
             documentType: { id: "44", name: "asd4", state: true },
             document: "string",
@@ -89,10 +89,10 @@ deposit.register({
 console.log("--------------------REGISTRO---------------------");
 console.log(deposit.findAll());
 deposit.update("1", {
-    accountId: {
+    account: {
         accountType: { id: "11", name: "asd1", state: true },
         balance: 0,
-        customerId: {
+        customer: {
             id: "1",
             documentType: { id: "11", name: "asd1", state: true },
             document: "string",

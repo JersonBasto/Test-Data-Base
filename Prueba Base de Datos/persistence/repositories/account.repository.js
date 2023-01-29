@@ -88,7 +88,7 @@ var AccountRepository = /** @class */ (function (_super) {
         return arrayBalanceLess;
     };
     AccountRepository.prototype.findByCustomerId = function (id) {
-        var accountIndex = this.database.findIndex(function (account) { return account.customerId.id === id; });
+        var accountIndex = this.database.findIndex(function (account) { return account.customer.id === id; });
         return this.database[accountIndex];
     };
     AccountRepository.prototype.findByAccountTypeId = function (id) {
@@ -96,7 +96,7 @@ var AccountRepository = /** @class */ (function (_super) {
         return this.database[accountIndex];
     };
     AccountRepository.prototype.findByDocumentTypeId = function (id) {
-        var accountIndex = this.database.findIndex(function (account) { return account.customerId.documentType.id === id; });
+        var accountIndex = this.database.findIndex(function (account) { return account.customer.documentType.id === id; });
         return this.database[accountIndex];
     };
     AccountRepository.prototype.hardDelete = function (id) {
@@ -106,6 +106,16 @@ var AccountRepository = /** @class */ (function (_super) {
     AccountRepository.prototype.softDelete = function (id) {
         var account = this.findOneById(id);
         account.deletedAt = Date.now();
+        this.update(id, account);
+    };
+    AccountRepository.prototype.findByStateId = function (id) {
+        var accountIndex = this.database.findIndex(function (account) { return account.id === id; });
+        return this.database[accountIndex].state;
+    };
+    AccountRepository.prototype.changeStateId = function (id, state) {
+        var accountIndex = this.database.findIndex(function (account) { return account.id === id; });
+        var account = this.database[accountIndex];
+        account.state = state;
         this.update(id, account);
     };
     return AccountRepository;

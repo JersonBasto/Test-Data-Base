@@ -28,15 +28,16 @@ var __assign = (this && this.__assign) || function () {
 exports.__esModule = true;
 exports.AccountTypeRepository = void 0;
 var base_repository_1 = require("./base/base.repository");
+var account_repository_1 = require("./account.repository");
 var AccountTypeRepository = /** @class */ (function (_super) {
     __extends(AccountTypeRepository, _super);
     function AccountTypeRepository() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     AccountTypeRepository.prototype.register = function (entity) {
+        var _a;
         this.database.push(entity);
-        var accountTypeIndex = this.database.findIndex(function (accountType) { return accountType.id === entity.id; });
-        return this.database[accountTypeIndex];
+        return (_a = this.database.at(-1)) !== null && _a !== void 0 ? _a : entity;
     };
     AccountTypeRepository.prototype.update = function (id, entity) {
         var accountTypeIndex = this.database.findIndex(function (accountType) { return accountType.id === id; });
@@ -45,14 +46,21 @@ var AccountTypeRepository = /** @class */ (function (_super) {
         return this.database[accountTypeIndex];
     };
     AccountTypeRepository.prototype["delete"] = function (id, soft) {
-        var accountTypeIndex = this.database.findIndex(function (accountType) { return accountType.id === id; });
-        this.database.splice(accountTypeIndex, 1);
+        var account = new account_repository_1.AccountRepository();
+        var result = account.findByAccountTypeId(id);
+        if (result) {
+            console.log("No se puede eliminar, depende de otra entidad");
+        }
+        else {
+            var accountTypeIndex = this.database.findIndex(function (accountType) { return accountType.id === id; });
+            this.database.splice(accountTypeIndex, 1);
+        }
     };
     AccountTypeRepository.prototype.findAll = function () {
         return this.database;
     };
     AccountTypeRepository.prototype.findOneById = function (id) {
-        var accountTypeIndex = this.database.findIndex(function (customer) { return customer.id === id; });
+        var accountTypeIndex = this.database.findIndex(function (accountType) { return accountType.id === id; });
         return this.database[accountTypeIndex];
     };
     AccountTypeRepository.prototype.findByState = function (state) {
@@ -63,6 +71,19 @@ var AccountTypeRepository = /** @class */ (function (_super) {
             }
         });
         return arrayState;
+    };
+    AccountTypeRepository.prototype.findByName = function (name) {
+        var arrayName = [];
+        this.database.map(function (accountType) {
+            if (accountType.name.includes(name)) {
+                arrayName.push(accountType);
+            }
+        });
+        return arrayName;
+    };
+    AccountTypeRepository.prototype.findByStateId = function (id) {
+        var accountType = this.findOneById(id);
+        return accountType.state;
     };
     return AccountTypeRepository;
 }(base_repository_1.BodyRepositoryAbstract));

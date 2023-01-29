@@ -1,7 +1,7 @@
 import { AccountModel } from "../../models";
 import { AccountEntity, AccountTypeEntity } from "../../persistence/entities";
-import { AccountRepository } from "../../persistence/repositories";
-import { AccountTypeRepository } from "../../persistence/repositories";
+import { AccountRepository } from "../../persistence/repositories/account.repository";
+import { AccountTypeRepository } from "../../persistence/repositories/account-type.repository";
 import { ErrorEntity } from "../../persistence/entities/error.entity";
 
 export class AccountService {
@@ -72,17 +72,14 @@ export class AccountService {
    * @param {number} amount
    * @memberof AccountService
    */
-  removeBalance(accountId: string, amount: number): void | ErrorEntity {
+  removeBalance(accountId: string, amount: number): void {
     const balance = this.getBalance(accountId);
     if (balance) {
       const account = this.accountRepository.findOneById(accountId);
       if (account.balance >= amount) {
         account.balance = account.balance - amount;
-      } else {
-        throw new NotFoundException("No se puede realizar esta operacion");
+        this.accountRepository.update(accountId, account);
       }
-
-      this.accountRepository.update(accountId, account);
     }
   }
 
@@ -112,11 +109,7 @@ export class AccountService {
    */
   getState(accountId: string): boolean | ErrorEntity {
     const accountState = this.accountRepository.findByStateId(accountId);
-    if (accountState != undefined) {
-      return accountState;
-    } else {
-      throw new NotFoundException("No se encontro cuenta con ese ID");
-    }
+    return accountState;
   }
 
   /**
@@ -126,7 +119,7 @@ export class AccountService {
    * @param {boolean} state
    * @memberof AccountService
    */
-  changeState(accountId: string, state: boolean): void | ErrorEntity {
+  changeState(accountId: string, state: boolean): void {
     const account = this.accountRepository.findOneById(accountId);
     if (account) {
       const accountTypeState = this.accountTypeRepository.findByStateId(
@@ -134,11 +127,6 @@ export class AccountService {
       );
       if (accountTypeState) {
         account.state = state;
-      } else {
-        throw new NotFoundException(
-          "No se puede cambiar de estado, ya que el tipo de cuenta esta en " +
-            accountTypeState
-        );
       }
     }
   }
@@ -178,14 +166,14 @@ export class AccountService {
    * @param {string} accountId
    * @memberof AccountService
    */
-  deleteAccount(accountId: string): void | ErrorEntity {
+  deleteAccount(accountId: string): void {
     const balance = this.getBalance(accountId);
     if (balance > 0) {
-      throw new NotFoundException("No se puede eliminar");
+      console.log("No se puede eliminar");
     } else {
       const state = this.getState(accountId);
       if (state) {
-        throw new NotFoundException("No se puede eliminar");
+        console.log("No se puede eliminar");
       } else {
         this.accountRepository.delete(accountId);
       }

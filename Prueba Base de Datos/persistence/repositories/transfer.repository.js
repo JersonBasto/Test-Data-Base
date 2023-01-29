@@ -34,9 +34,9 @@ var TransferRespository = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     TransferRespository.prototype.register = function (entity) {
+        var _a;
         this.database.push(entity);
-        var transferIndex = this.database.findIndex(function (transfer) { return transfer.id === entity.id; });
-        return this.database[transferIndex];
+        return (_a = this.database.at(-1)) !== null && _a !== void 0 ? _a : entity;
     };
     TransferRespository.prototype.update = function (id, entity) {
         var transferIndex = this.database.findIndex(function (transfer) { return transfer.id === id; });
@@ -47,12 +47,10 @@ var TransferRespository = /** @class */ (function (_super) {
     TransferRespository.prototype["delete"] = function (id, soft) {
         var transfer = this.findOneById(id);
         if (soft || soft === undefined) {
-            transfer.deletedAt = Date.now();
-            this.update(id, transfer);
+            this.softDelete(id);
         }
         else {
-            var transferIndex = this.database.findIndex(function (account) { return account.id === id; });
-            this.database.splice(transferIndex, 1);
+            this.hardDelete(id);
         }
     };
     TransferRespository.prototype.findAll = function () {
@@ -63,19 +61,19 @@ var TransferRespository = /** @class */ (function (_super) {
         return this.database[transferIndex];
     };
     TransferRespository.prototype.findByIncomeCustomerId = function (id) {
-        var transferIndex = this.database.findIndex(function (transfer) { return transfer.income.customerId.id === id; });
+        var transferIndex = this.database.findIndex(function (transfer) { return transfer.income.customer.id === id; });
         return this.database[transferIndex];
     };
     TransferRespository.prototype.findByIncomeId = function (id) {
-        var transferIndex = this.database.findIndex(function (transfer) { return transfer.income.id === id; });
-        return this.database[transferIndex];
+        var transferArray = this.database.filter(function (transfer) { return transfer.income.id === id; });
+        return transferArray;
     };
     TransferRespository.prototype.findByOutcomeId = function (id) {
-        var transferIndex = this.database.findIndex(function (transfer) { return transfer.outcome.id === id; });
-        return this.database[transferIndex];
+        var transferArray = this.database.filter(function (transfer) { return transfer.outcome.id === id; });
+        return transferArray;
     };
     TransferRespository.prototype.findByOutcomeCustomerId = function (id) {
-        var transferIndex = this.database.findIndex(function (transfer) { return transfer.outcome.customerId.id === id; });
+        var transferIndex = this.database.findIndex(function (transfer) { return transfer.outcome.customer.id === id; });
         return this.database[transferIndex];
     };
     TransferRespository.prototype.findByAmountGreaterThan = function (amount) {
@@ -97,13 +95,26 @@ var TransferRespository = /** @class */ (function (_super) {
         return arrayAmount;
     };
     TransferRespository.prototype.hardDelete = function (id) {
-        var transferIndex = this.database.findIndex(function (account) { return account.id === id; });
+        var transferIndex = this.database.findIndex(function (transfer) { return transfer.id === id; });
         this.database.splice(transferIndex, 1);
     };
     TransferRespository.prototype.softDelete = function (id) {
         var transfer = this.findOneById(id);
         transfer.deletedAt = Date.now();
         this.update(id, transfer);
+    };
+    TransferRespository.prototype.sortByDate = function (date) {
+        var arrayDate = [];
+        arrayDate = this.database.sort();
+        return arrayDate;
+    };
+    TransferRespository.prototype.findByDateRange = function (id, DateMin, DateMax) {
+        var arrayTransfers = this.findAll();
+        return arrayTransfers.filter(function (transfer) {
+            return transfer.id === id &&
+                transfer.dateTime >= DateMin &&
+                transfer.dateTime <= DateMax;
+        });
     };
     return TransferRespository;
 }(base_repository_1.BodyRepositoryAbstract));

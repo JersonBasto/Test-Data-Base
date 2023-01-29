@@ -27,6 +27,7 @@ var __assign = (this && this.__assign) || function () {
 };
 exports.__esModule = true;
 exports.DepositRepository = void 0;
+var error_entity_1 = require("../entities/error.entity");
 var base_repository_1 = require("./base/base.repository");
 var DepositRepository = /** @class */ (function (_super) {
     __extends(DepositRepository, _super);
@@ -34,11 +35,12 @@ var DepositRepository = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     DepositRepository.prototype.register = function (entity) {
+        var _a;
         this.database.push(entity);
-        var depositIndex = this.database.findIndex(function (deposit) { return deposit.id === entity.id; });
-        return this.database[depositIndex];
+        return (_a = this.database.at(-1)) !== null && _a !== void 0 ? _a : entity;
     };
     DepositRepository.prototype.update = function (id, entity) {
+        var errorDeposit = new error_entity_1.ErrorEntity();
         var depositIndex = this.database.findIndex(function (deposit) { return deposit.id === id; });
         var data = this.database[depositIndex];
         this.database[depositIndex] = __assign(__assign(__assign({}, data), entity), { id: id });
@@ -47,12 +49,10 @@ var DepositRepository = /** @class */ (function (_super) {
     DepositRepository.prototype["delete"] = function (id, soft) {
         var deposit = this.findOneById(id);
         if (soft || soft === undefined) {
-            deposit.deletedAt = Date.now();
-            this.update(id, deposit);
+            this.softDelete(id);
         }
         else {
-            var depositIndex = this.database.findIndex(function (deposit) { return deposit.id === id; });
-            this.database.splice(depositIndex, 1);
+            this.hardDelete(id);
         }
     };
     DepositRepository.prototype.findAll = function () {
@@ -63,25 +63,23 @@ var DepositRepository = /** @class */ (function (_super) {
         return this.database[depositIndex];
     };
     DepositRepository.prototype.findByAccountId = function (accountId) {
-        var depositIndex = this.database.findIndex(function (deposit) { return deposit.accountId.id === accountId; });
+        var depositIndex = this.database.findIndex(function (deposit) { return deposit.account.id === accountId; });
         return this.database[depositIndex];
     };
     DepositRepository.prototype.findByAccountTypeId = function (accountTypeId) {
-        var depositIndex = this.database.findIndex(function (deposit) { return deposit.accountId.accountType.id === accountTypeId; });
+        var depositIndex = this.database.findIndex(function (deposit) { return deposit.account.accountType.id === accountTypeId; });
         return this.database[depositIndex];
     };
     DepositRepository.prototype.findByCustomerId = function (customerId) {
-        var depositIndex = this.database.findIndex(function (deposit) { return deposit.accountId.customerId.id === customerId; });
+        var depositIndex = this.database.findIndex(function (deposit) { return deposit.account.customer.id === customerId; });
         return this.database[depositIndex];
     };
     DepositRepository.prototype.findByEmail = function (email) {
-        var depositIndex = this.database.findIndex(function (deposit) { return deposit.accountId.customerId.email === email; });
+        var depositIndex = this.database.findIndex(function (deposit) { return deposit.account.customer.email === email; });
         return this.database[depositIndex];
     };
     DepositRepository.prototype.findByDocumentTypeId = function (documentTypeId) {
-        var depositIndex = this.database.findIndex(function (deposit) {
-            return deposit.accountId.customerId.documentType.id === documentTypeId;
-        });
+        var depositIndex = this.database.findIndex(function (deposit) { return deposit.account.customer.documentType.id === documentTypeId; });
         return this.database[depositIndex];
     };
     DepositRepository.prototype.findAmountGreaterThan = function (amount) {
@@ -101,6 +99,23 @@ var DepositRepository = /** @class */ (function (_super) {
             }
         });
         return arrayAmount;
+    };
+    DepositRepository.prototype.hardDelete = function (id) {
+        var depositIndex = this.database.findIndex(function (account) { return account.id === id; });
+        this.database.splice(depositIndex, 1);
+    };
+    DepositRepository.prototype.softDelete = function (id) {
+        var deposit = this.findOneById(id);
+        deposit.deletedAt = Date.now();
+        this.update(id, deposit);
+    };
+    DepositRepository.prototype.findByDateRange = function (id, DateMin, DateMax) {
+        var arrayDeposites = this.findAll();
+        return arrayDeposites.filter(function (deposit) {
+            return deposit.id === id &&
+                deposit.dateTime >= DateMin &&
+                deposit.dateTime <= DateMax;
+        });
     };
     return DepositRepository;
 }(base_repository_1.BodyRepositoryAbstract));

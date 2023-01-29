@@ -1,16 +1,15 @@
 import { DocumentTypeEntity } from "../entities";
 import { BodyRepositoryAbstract } from "./base/base.repository";
 import { DocumentTypeRepositoryInterface } from "./interface/document-type/document-type-repository.interface";
+import { CustomerRepository } from "./customer.repository";
 
 export class DocumentTypeRepository
   extends BodyRepositoryAbstract<DocumentTypeEntity>
-  implements DocumentTypeRepositoryInterface {
+  implements DocumentTypeRepositoryInterface
+{
   register(entity: DocumentTypeEntity): DocumentTypeEntity {
     this.database.push(entity);
-    const documentTypeIndex = this.database.findIndex(
-      (documentType) => documentType.id === entity.id
-    );
-    return this.database[documentTypeIndex];
+    return this.database.at(-1) ?? entity;
   }
   update(id: string, entity: DocumentTypeEntity): DocumentTypeEntity {
     const documentTypeIndex = this.database.findIndex(
@@ -25,17 +24,19 @@ export class DocumentTypeRepository
     return this.database[documentTypeIndex];
   }
   delete(id: string, soft?: boolean | undefined): void {
-    const documentTypeIndex = this.database.findIndex(
-      (account) => account.id === id
+    const account = new CustomerRepository();
+    const result = account.findByDocumentTypeId(id);
+    const accountTypeIndex = this.database.findIndex(
+      (accountType) => accountType.id === id
     );
-    this.database.splice(documentTypeIndex, 1);
+    this.database.splice(accountTypeIndex, 1);
   }
   findAll(): DocumentTypeEntity[] {
     return this.database;
   }
   findOneById(id: string): DocumentTypeEntity {
     const documentTypeIndex = this.database.findIndex(
-      (customer) => customer.id === id
+      (documentType) => documentType.id === id
     );
     return this.database[documentTypeIndex];
   }
@@ -47,5 +48,14 @@ export class DocumentTypeRepository
       }
     });
     return arrayState;
+  }
+  findByName(name: string): DocumentTypeEntity[] {
+    let arrayName: DocumentTypeEntity[] = [];
+    this.database.map((documentType) => {
+      if (documentType.name.includes(name)) {
+        arrayName.push(documentType);
+      }
+    });
+    return arrayName;
   }
 }

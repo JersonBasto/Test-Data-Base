@@ -1,11 +1,11 @@
-import { AccountRepository } from "./persistence/repositories";
+import { AccountRepository } from "../persistence/repositories/account.repository";
 
 let account = new AccountRepository();
 
 account.register({
   accountType: { id: "11", name: "asd1", state: true },
   balance: 0,
-  customerId: {
+  customer: {
     id: "1",
     documentType: { id: "11", name: "asd1", state: true },
     document: "string",
@@ -21,7 +21,7 @@ account.register({
 account.register({
   accountType: { id: "22", name: "asd2", state: true },
   balance: 0,
-  customerId: {
+  customer: {
     id: "2",
     documentType: { id: "22", name: "asd2", state: true },
     document: "string",
@@ -37,7 +37,7 @@ account.register({
 account.register({
   accountType: { id: "33", name: "asd3", state: true },
   balance: 0,
-  customerId: {
+  customer: {
     id: "3",
     documentType: { id: "33", name: "asd3", state: true },
     document: "string",
@@ -53,7 +53,7 @@ account.register({
 account.register({
   accountType: { id: "44", name: "asd4", state: true },
   balance: 0,
-  customerId: {
+  customer: {
     id: "4",
     documentType: { id: "44", name: "asd4", state: true },
     document: "string",
@@ -71,7 +71,7 @@ console.log(account.findAll());
 account.update("3", {
   accountType: { id: "33", name: "asd3", state: true },
   balance: 10000,
-  customerId: {
+  customer: {
     id: "3",
     documentType: { id: "33", name: "asd3", state: true },
     document: "string",

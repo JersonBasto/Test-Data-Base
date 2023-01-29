@@ -4,13 +4,11 @@ import { TransferRepositoryInterface } from "./interface/transfer/transfer-repos
 
 export class TransferRespository
   extends BodyRepositoryAbstract<TransferEntity>
-  implements TransferRepositoryInterface {
+  implements TransferRepositoryInterface
+{
   register(entity: TransferEntity): TransferEntity {
     this.database.push(entity);
-    const transferIndex = this.database.findIndex(
-      (transfer) => transfer.id === entity.id
-    );
-    return this.database[transferIndex];
+    return this.database.at(-1) ?? entity;
   }
   update(id: string, entity: TransferEntity): TransferEntity {
     const transferIndex = this.database.findIndex(
@@ -25,20 +23,15 @@ export class TransferRespository
     return this.database[transferIndex];
   }
   delete(id: string, soft?: boolean | undefined): void {
-    const transfer = this.findOneById(id)
+    const transfer = this.findOneById(id);
     if (soft || soft === undefined) {
-      transfer.deletedAt = Date.now()
-      this.update(id, transfer)
-    }
-    else {
-      const transferIndex = this.database.findIndex(
-        (account) => account.id === id
-      );
-      this.database.splice(transferIndex, 1);
+      this.softDelete(id);
+    } else {
+      this.hardDelete(id);
     }
   }
   findAll(): TransferEntity[] {
-    return this.database.filter(transfer => transfer.deletedAt === undefined);
+    return this.database.filter((transfer) => transfer.deletedAt === undefined);
   }
   findOneById(id: string): TransferEntity {
     const transferIndex = this.database.findIndex(
@@ -48,25 +41,25 @@ export class TransferRespository
   }
   findByIncomeCustomerId(id: string): TransferEntity {
     const transferIndex = this.database.findIndex(
-      (transfer) => transfer.income.customerId.id === id
+      (transfer) => transfer.income.customer.id === id
     );
     return this.database[transferIndex];
   }
-  findByIncomeId(id: string): TransferEntity {
-    const transferIndex = this.database.findIndex(
+  findByIncomeId(id: string): TransferEntity[] {
+    const transferArray = this.database.filter(
       (transfer) => transfer.income.id === id
     );
-    return this.database[transferIndex];
+    return transferArray;
   }
-  findByOutcomeId(id: string): TransferEntity {
-    const transferIndex = this.database.findIndex(
+  findByOutcomeId(id: string): TransferEntity[] {
+    const transferArray = this.database.filter(
       (transfer) => transfer.outcome.id === id
     );
-    return this.database[transferIndex];
+    return transferArray;
   }
   findByOutcomeCustomerId(id: string): TransferEntity {
     const transferIndex = this.database.findIndex(
-      (transfer) => transfer.outcome.customerId.id === id
+      (transfer) => transfer.outcome.customer.id === id
     );
     return this.database[transferIndex];
   }
@@ -90,13 +83,31 @@ export class TransferRespository
   }
   hardDelete(id: string): void {
     const transferIndex = this.database.findIndex(
-      (account) => account.id === id
+      (transfer) => transfer.id === id
     );
     this.database.splice(transferIndex, 1);
   }
   softDelete(id: string): void {
-    const transfer = this.findOneById(id)
-    transfer.deletedAt = Date.now()
-    this.update(id, transfer)
+    const transfer = this.findOneById(id);
+    transfer.deletedAt = Date.now();
+    this.update(id, transfer);
+  }
+  sortByDate(date: number | Date): TransferEntity[] {
+    let arrayDate: TransferEntity[] = [];
+    arrayDate = this.database.sort();
+    return arrayDate;
+  }
+  findByDateRange(
+    id: string,
+    DateMin: number | Date,
+    DateMax: Number | Date
+  ): TransferEntity[] {
+    const arrayTransfers = this.findAll();
+    return arrayTransfers.filter(
+      (transfer) =>
+        transfer.id === id &&
+        transfer.dateTime >= DateMin &&
+        transfer.dateTime <= DateMax
+    );
   }
 }

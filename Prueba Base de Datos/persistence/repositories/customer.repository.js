@@ -34,9 +34,10 @@ var CustomerRepository = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     CustomerRepository.prototype.register = function (entity) {
+        var _a;
         this.database.push(entity);
         var customerIndex = this.database.findIndex(function (customer) { return customer.id === entity.id; });
-        return this.database[customerIndex];
+        return (_a = this.database[customerIndex]) !== null && _a !== void 0 ? _a : entity;
     };
     CustomerRepository.prototype.update = function (id, entity) {
         var customerIndex = this.database.findIndex(function (customer) { return customer.id === id; });
@@ -47,16 +48,16 @@ var CustomerRepository = /** @class */ (function (_super) {
     CustomerRepository.prototype["delete"] = function (id, soft) {
         var customer = this.findOneById(id);
         if (soft || soft === undefined) {
-            customer.deletedAt = Date.now();
-            this.update(id, customer);
+            this.softDelete(id);
         }
         else {
-            var customerIndex = this.database.findIndex(function (customer) { return customer.id === id; });
-            this.database.splice(customerIndex, 1);
+            this.hardDelete(id);
         }
     };
     CustomerRepository.prototype.findAll = function () {
-        return this.database.filter(function (customer) { return customer.deletedAt === undefined; });
+        return this.database.filter(function (customer) {
+            customer.deletedAt === undefined;
+        });
     };
     CustomerRepository.prototype.findOneById = function (id) {
         var customerIndex = this.database.findIndex(function (customer) { return customer.id === id; });
@@ -78,6 +79,42 @@ var CustomerRepository = /** @class */ (function (_super) {
             }
         });
         return arrayState;
+    };
+    CustomerRepository.prototype.findEmailAndPassword = function (email, password) {
+        var customer = this.database.filter(function (customer) { return customer.email === email && customer.password === password; });
+        if (customer) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    };
+    CustomerRepository.prototype.findByFullName = function (name) {
+        var arrayName = [];
+        this.database.map(function (customer) {
+            if (customer.fullName.includes(name)) {
+                arrayName.push(customer);
+            }
+        });
+        return arrayName;
+    };
+    CustomerRepository.prototype.hardDelete = function (id) {
+        var customerIndex = this.database.findIndex(function (account) { return account.id === id; });
+        this.database.splice(customerIndex, 1);
+    };
+    CustomerRepository.prototype.softDelete = function (id) {
+        var customer = this.findOneById(id);
+        customer.deletedAt = Date.now();
+        this.update(id, customer);
+    };
+    CustomerRepository.prototype.findByPhone = function (phone) {
+        var arrayPhone = [];
+        this.database.map(function (customer) {
+            if (customer.phone.includes(phone)) {
+                arrayPhone.push(customer);
+            }
+        });
+        return arrayPhone;
     };
     return CustomerRepository;
 }(base_repository_1.BodyRepositoryAbstract));

@@ -1,6 +1,7 @@
 import { AccountTypeEntity } from "../entities";
 import { BodyRepositoryAbstract } from "./base/base.repository";
 import { AccountTypeRepositoryInterface } from "./interface/account-type/account-type-repository.interface";
+import { AccountRepository } from "./account.repository";
 
 export class AccountTypeRepository
   extends BodyRepositoryAbstract<AccountTypeEntity>
@@ -8,10 +9,7 @@ export class AccountTypeRepository
 {
   register(entity: AccountTypeEntity): AccountTypeEntity {
     this.database.push(entity);
-    const accountTypeIndex = this.database.findIndex(
-      (accountType) => accountType.id === entity.id
-    );
-    return this.database[accountTypeIndex];
+    return this.database.at(-1) ?? entity;
   }
   update(id: string, entity: AccountTypeEntity): AccountTypeEntity {
     const accountTypeIndex = this.database.findIndex(
@@ -26,17 +24,23 @@ export class AccountTypeRepository
     return this.database[accountTypeIndex];
   }
   delete(id: string, soft?: boolean | undefined): void {
-    const accountTypeIndex = this.database.findIndex(
-      (accountType) => accountType.id === id
-    );
-    this.database.splice(accountTypeIndex, 1);
+    const account = new AccountRepository();
+    const result = account.findByAccountTypeId(id);
+    if (result) {
+      console.log("No se puede eliminar, depende de otra entidad");
+    } else {
+      const accountTypeIndex = this.database.findIndex(
+        (accountType) => accountType.id === id
+      );
+      this.database.splice(accountTypeIndex, 1);
+    }
   }
   findAll(): AccountTypeEntity[] {
     return this.database;
   }
   findOneById(id: string): AccountTypeEntity {
     const accountTypeIndex = this.database.findIndex(
-      (customer) => customer.id === id
+      (accountType) => accountType.id === id
     );
     return this.database[accountTypeIndex];
   }
@@ -48,5 +52,18 @@ export class AccountTypeRepository
       }
     });
     return arrayState;
+  }
+  findByName(name: string): AccountTypeEntity[] {
+    let arrayName: AccountTypeEntity[] = [];
+    this.database.map((accountType) => {
+      if (accountType.name.includes(name)) {
+        arrayName.push(accountType);
+      }
+    });
+    return arrayName;
+  }
+  findByStateId(id: string): boolean {
+    const accountType = this.findOneById(id);
+    return accountType.state;
   }
 }
