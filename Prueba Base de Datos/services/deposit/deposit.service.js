@@ -51,7 +51,7 @@ var DepositService = /** @class */ (function () {
      * @memberof DepositService
      */
     DepositService.prototype.getHistory = function (accountId, pagination, dataRange) {
-        var arrayTransfer = this.depositRepository.findByDateRange(accountId, 0, Date.now());
+        var arrayTransfer = this.depositRepository.findByDateRange(accountId, 0, 9999999999);
         var arrayTransferReturn = [];
         var range = 0;
         pagination.size = arrayTransfer.length;
@@ -62,7 +62,7 @@ var DepositService = /** @class */ (function () {
             range = dataRange.range;
         }
         pagination.numberPages = Math.round(pagination.size / range);
-        for (var x = 1 + range * (pagination.actualPage - 1); x < range + range * (pagination.actualPage - 1); x++) {
+        for (var x = 1 + range * (pagination.actualPage - 1); x < 1 + range + range * (pagination.actualPage - 1); x++) {
             arrayTransferReturn.push(arrayTransfer[x - 1]);
         }
         return arrayTransferReturn;

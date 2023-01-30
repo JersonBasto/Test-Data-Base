@@ -62,7 +62,7 @@ export class DepositService {
     const arrayTransfer = this.depositRepository.findByDateRange(
       accountId,
       0,
-      Date.now()
+      9999999999
     );
     const arrayTransferReturn: DepositEntity[] = [];
     let range = 0;
@@ -75,7 +75,7 @@ export class DepositService {
     pagination.numberPages = Math.round(pagination.size / range);
     for (
       let x = 1 + range * (pagination.actualPage - 1);
-      x < range + range * (pagination.actualPage - 1);
+      x < 1 + range + range * (pagination.actualPage - 1);
       x++
     ) {
       arrayTransferReturn.push(arrayTransfer[x - 1]);

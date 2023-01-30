@@ -1,4 +1,4 @@
-import { DepositRepository } from "./persistence/repositories/deposit.repository";
+import { DepositRepository } from "../persistence/repositories/deposit.repository";
 
 let deposit = new DepositRepository();
 deposit.register({

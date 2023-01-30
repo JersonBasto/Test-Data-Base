@@ -28,9 +28,18 @@ var AccountService = /** @class */ (function () {
      * @memberof AccountService
      */
     AccountService.prototype.getBalance = function (accountId) {
-        var _a;
         var account = this.accountRepository.findOneById(accountId);
-        return (_a = account.balance) !== null && _a !== void 0 ? _a : undefined;
+        if (account) {
+            if (account.state) {
+                return account.balance;
+            }
+            else {
+                throw new Error('La cuenta no se encuentra activa');
+            }
+        }
+        else {
+            throw new Error('No se encontro ninguna cuenta con ese ID');
+        }
     };
     /**
      * Agregar balance a una cuenta

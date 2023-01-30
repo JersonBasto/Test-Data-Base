@@ -32,7 +32,15 @@ export class AccountService {
    */
   getBalance(accountId: string): number {
     const account = this.accountRepository.findOneById(accountId);
-    return account.balance ?? undefined;
+    if (account) {
+      if (account.state) {
+        return account.balance;
+      } else {
+        throw new Error('La cuenta no se encuentra activa');
+      }
+    } else {
+      throw new Error('No se encontro ninguna cuenta con ese ID');
+    }
   }
 
   /**

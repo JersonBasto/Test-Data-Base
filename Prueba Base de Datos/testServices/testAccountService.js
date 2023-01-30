@@ -7,5 +7,5 @@ var account = new services_1.AccountService(new account_repository_1.AccountRepo
 account.addBalance("1", 3000);
 account.removeBalance("1", 500);
 account.changeAccountType("1", "2");
-var result1 = account.getBalance("4");
+var result1 = account.getBalance("1");
 console.log(result1);

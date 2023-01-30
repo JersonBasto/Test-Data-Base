@@ -1,3 +1,4 @@
+import { depositDataBase } from "../../database/depositDataBase";
 import { DepositEntity } from "../entities";
 import { ErrorEntity } from "../entities/error.entity";
 import { BodyRepositoryAbstract } from "./base/base.repository";
@@ -7,6 +8,10 @@ export class DepositRepository
   extends BodyRepositoryAbstract<DepositEntity>
   implements DepositRepositoryInterface
 {
+  constructor() {
+    super();
+    this.database = depositDataBase;
+  }
   register(entity: DepositEntity): DepositEntity {
     this.database.push(entity);
     return this.database.at(-1) ?? entity;
@@ -33,7 +38,7 @@ export class DepositRepository
     }
   }
   findAll(): DepositEntity[] {
-    return this.database.filter((deposit) => deposit.deletedAt === undefined);
+    return this.database.filter((deposit) => deposit.deletedAt == undefined);
   }
   findOneById(id: string): DepositEntity {
     const depositIndex = this.database.findIndex(
@@ -108,7 +113,7 @@ export class DepositRepository
     const arrayDeposites = this.findAll();
     return arrayDeposites.filter(
       (deposit) =>
-        deposit.id === id &&
+        deposit.account.id === id &&
         deposit.dateTime >= DateMin &&
         deposit.dateTime <= DateMax
     );

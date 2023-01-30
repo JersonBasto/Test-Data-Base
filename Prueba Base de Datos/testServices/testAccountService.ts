@@ -8,5 +8,5 @@ const account = new AccountService(
 account.addBalance("1", 3000);
 account.removeBalance("1", 500);
 account.changeAccountType("1", "2");
-const result1 = account.getBalance("4");
+const result1 = account.getBalance("1");
 console.log(result1);

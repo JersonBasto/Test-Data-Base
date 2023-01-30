@@ -27,12 +27,15 @@ var __assign = (this && this.__assign) || function () {
 };
 exports.__esModule = true;
 exports.DepositRepository = void 0;
+var depositDataBase_1 = require("../../database/depositDataBase");
 var error_entity_1 = require("../entities/error.entity");
 var base_repository_1 = require("./base/base.repository");
 var DepositRepository = /** @class */ (function (_super) {
     __extends(DepositRepository, _super);
     function DepositRepository() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super.call(this) || this;
+        _this.database = depositDataBase_1.depositDataBase;
+        return _this;
     }
     DepositRepository.prototype.register = function (entity) {
         var _a;
@@ -56,7 +59,7 @@ var DepositRepository = /** @class */ (function (_super) {
         }
     };
     DepositRepository.prototype.findAll = function () {
-        return this.database.filter(function (deposit) { return deposit.deletedAt === undefined; });
+        return this.database.filter(function (deposit) { return deposit.deletedAt == undefined; });
     };
     DepositRepository.prototype.findOneById = function (id) {
         var depositIndex = this.database.findIndex(function (deposit) { return deposit.id === id; });
@@ -112,7 +115,7 @@ var DepositRepository = /** @class */ (function (_super) {
     DepositRepository.prototype.findByDateRange = function (id, DateMin, DateMax) {
         var arrayDeposites = this.findAll();
         return arrayDeposites.filter(function (deposit) {
-            return deposit.id === id &&
+            return deposit.account.id === id &&
                 deposit.dateTime >= DateMin &&
                 deposit.dateTime <= DateMax;
         });
