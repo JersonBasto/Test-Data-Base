@@ -10,8 +10,8 @@ const deposit = new DepositService(
   new AccountService(new AccountRepository(), new AccountTypeRepository())
 );
 const pagination = new PaginationEntity();
-pagination.actualPage = 5;
+pagination.actualPage = 1;
 const dataRange = new DataRangeEntity();
-dataRange.range = 2;
+dataRange.range = 5;
 const result = deposit.getHistory("1", pagination, dataRange);
 console.log(result)

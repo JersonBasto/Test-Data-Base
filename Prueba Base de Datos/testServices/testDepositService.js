@@ -8,8 +8,8 @@ var deposit_repository_1 = require("../persistence/repositories/deposit.reposito
 var services_1 = require("../services");
 var deposit = new services_1.DepositService(new deposit_repository_1.DepositRepository(), new services_1.AccountService(new account_repository_1.AccountRepository(), new account_type_repository_1.AccountTypeRepository()));
 var pagination = new pagination_entity_1.PaginationEntity();
-pagination.actualPage = 5;
+pagination.actualPage = 1;
 var dataRange = new data_range_entity_1.DataRangeEntity();
-dataRange.range = 2;
+dataRange.range = 5;
 var result = deposit.getHistory("1", pagination, dataRange);
 console.log(result);
